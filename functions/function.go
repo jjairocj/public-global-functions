@@ -85,8 +85,8 @@ func decryptAES(data string, passphrase string) []byte {
 
 func generateRandomString(s int) (string, error) {
 	b, err := generateRandomBytes(s)
-
-	return base64.StdEncoding.EncodeToString(b)[0:s], err
+	
+	return strings.ReplaceAll(base64.StdEncoding.EncodeToString(b)[0:s], "/", "-"), err
 }
 
 func generateRandomBytes(n int) ([]byte, error) {
