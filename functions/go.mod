@@ -1,5 +1,3 @@
-module github.com/jjairocj/hash-api/src/pkg/functions
+module github.com/jjairocj/public-global-functions/functions
 
 go 1.16
-
-require github.com/jjairocj/hash-api/src/pkg/settings-provider

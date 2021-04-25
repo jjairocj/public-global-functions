@@ -1,3 +1,3 @@
-module github.com/jjairocj/hash-api/src/pkg/settings-provider
+module github.com/jjairocj/public-global-functions/settings-provider
 
 go 1.16

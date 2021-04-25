@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	jsonConfig "github.com/jjairocj/hash-api/src/pkg/settings-provider/provider"
+	jsonConfig "github.com/jjairocj/public-global-functions/settings-provider"
 )
 
 func createHash(key string) string {
