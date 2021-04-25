@@ -7,14 +7,23 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	rand "math/rand"
 	"strings"
 	"time"
 
 	jsonConfig "github.com/jjairocj/public-global-functions/settings-provider"
 )
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
 
 func createHash(key string) string {
 	hasher := md5.New()
@@ -85,7 +94,7 @@ func decryptAES(data string, passphrase string) []byte {
 
 func generateRandomString(s int) (string, error) {
 	b, err := generateRandomBytes(s)
-	
+
 	return strings.ReplaceAll(base64.StdEncoding.EncodeToString(b)[0:s], "/", "-"), err
 }
 
@@ -116,4 +125,46 @@ func Decrypt(data string) string {
 	phassprase, _ := jsonConfig.GetSection("Seg:Phassphrase")
 	plaintext := decryptAES(data, phassprase)
 	return string(plaintext)
+}
+
+func GeneratePhassphrase(lang string, length int, format string) string {
+	var m interface{}
+	rand.Seed(time.Now().Unix())
+
+	if lang != "Spa" {
+		lang = "Eng"
+	}
+	path, _ := jsonConfig.GetSection("Dictionary:" + lang)
+
+	dat, err := ioutil.ReadFile(path)
+	check(err)
+
+	if err := json.Unmarshal([]byte(dat), &m); err != nil {
+		log.Fatal(err)
+	}
+
+	phrase := ""
+	sum := 0
+	for i := 1; i <= length; i++ {
+		wordsList := m.(map[string]interface{})
+
+		item := wordsList["dictionary"].([]interface{})
+
+		iv := item[rand.Intn(len(item))]
+
+		switch format {
+
+		case "upp":
+			phrase += strings.ToUpper(iv.(string)) + " "
+		case "pas":
+			phrase += strings.Title(strings.ToLower(iv.(string))) + " "
+		default:
+			phrase += strings.ToLower(iv.(string)) + " "
+		}
+
+		sum += i
+	}
+
+	return string(phrase)
+
 }
